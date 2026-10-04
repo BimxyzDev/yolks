@@ -31,6 +31,7 @@ ENV USER=container \
 WORKDIR /home/container
 
 COPY --chmod=755 entrypoint.sh /entrypoint.sh
+COPY --chmod=755 start.sh /usr/local/bin/start.sh
 
 ENTRYPOINT ["/usr/bin/tini", "-g", "--"]
 CMD ["/bin/bash", "/entrypoint.sh"]
