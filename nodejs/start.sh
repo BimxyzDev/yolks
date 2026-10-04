@@ -26,7 +26,7 @@ if [ "${ENABLE_CLOUDFLARE_TUNNEL}" == "1" ]; then
     (
         while true; do
             if [ -n "${CF_TUNNEL_TOKEN}" ]; then
-                "${CF_BIN}" tunnel run --no-autoupdate --token "${CF_TUNNEL_TOKEN}" >> "${CF_LOG}" 2>&1
+                "${CF_BIN}" tunnel --no-autoupdate run --token "${CF_TUNNEL_TOKEN}" >> "${CF_LOG}" 2>&1
             else
                 "${CF_BIN}" tunnel --no-autoupdate --url "http://127.0.0.1:${SERVER_PORT}" >> "${CF_LOG}" 2>&1
             fi
@@ -64,16 +64,23 @@ if [ -n "${CMD_RUN}" ]; then
 fi
 
 if [ "${ENABLE_SHELL}" == "1" ]; then
+    show_prompt() {
+        printf '\033[1;32mBimxyz\033[0m#:\n'
+    }
     trap 'echo "[shell] server stopped."; exit 0' INT TERM
     echo "[shell] Shell mode aktif, server running. Ketik perintah bash di console, ketik exit untuk stop."
+    show_prompt
     while IFS= read -r SHELL_LINE; do
         if [ -z "${SHELL_LINE}" ]; then
+            show_prompt
             continue
         fi
+        printf '\033[1;32mBimxyz\033[0m#: %s\n' "${SHELL_LINE}"
         eval "${SHELL_LINE}"
         SHELL_RC=$?
         if [ ${SHELL_RC} -ne 0 ]; then
             echo "[exit ${SHELL_RC}]"
         fi
+        show_prompt
     done
 fi
