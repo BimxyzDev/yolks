@@ -1,7 +1,7 @@
 FROM debian:bookworm-slim
 
 ARG TARGETARCH
-ARG NODE_VERSION=19.9.0
+ARG NODE_FULL_VERSION=19.9.0
 ARG CLOUDFLARED_VERSION=latest
 
 LABEL org.opencontainers.image.source="https://github.com/BimxyzDev/yolks"
@@ -16,9 +16,9 @@ RUN apt-get update \
       arm64) NODE_ARCH=arm64 ;; \
       *) echo "Unsupported arch: ${TARGETARCH}"; exit 1 ;; \
     esac \
- && NODE_TAR="node-v${NODE_VERSION}-linux-${NODE_ARCH}.tar.xz" \
- && curl --fail --location --silent --show-error -O "https://nodejs.org/dist/v${NODE_VERSION}/${NODE_TAR}" \
- && curl --fail --location --silent --show-error "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" | grep " ${NODE_TAR}" | sha256sum -c - \
+ && NODE_TAR="node-v${NODE_FULL_VERSION}-linux-${NODE_ARCH}.tar.xz" \
+ && curl --fail --location --silent --show-error -O "https://nodejs.org/dist/v${NODE_FULL_VERSION}/${NODE_TAR}" \
+ && curl --fail --location --silent --show-error "https://nodejs.org/dist/v${NODE_FULL_VERSION}/SHASUMS256.txt" | grep " ${NODE_TAR}" | sha256sum -c - \
  && tar -xJf "${NODE_TAR}" -C /usr/local --strip-components=1 --no-same-owner \
  && rm -f "${NODE_TAR}" \
  && ln -sf /usr/local/bin/node /usr/local/bin/nodejs \
