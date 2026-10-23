@@ -50,11 +50,34 @@ fi
 if [ -f /home/container/package.json ] && [ /home/container/package.json -nt /home/container/node_modules ]; then
     npm install --omit=dev --no-audit --no-fund
 fi
+PKG_RE='^[A-Za-z0-9@][A-Za-z0-9@._/~^=:+*-]*$'
+
+parse_pkgs() {
+    PKGS=()
+    case "$1" in
+        *$'\n'*|*$'\r'*) return 1 ;;
+    esac
+    read -r -a PKGS <<< "$1"
+    local p
+    for p in "${PKGS[@]}"; do
+        [[ "${p}" =~ ${PKG_RE} ]] || return 1
+    done
+    return 0
+}
+
 if [ -n "${NODE_PACKAGES}" ]; then
-    npm install --no-audit --no-fund ${NODE_PACKAGES}
+    if parse_pkgs "${NODE_PACKAGES}"; then
+        npm install --no-audit --no-fund -- "${PKGS[@]}"
+    else
+        echo "ERROR: Additional NodeJS Packages berisi karakter/opsi tidak valid, dilewati."
+    fi
 fi
 if [ -n "${UNNODE_PACKAGES}" ]; then
-    npm uninstall --no-audit --no-fund ${UNNODE_PACKAGES}
+    if parse_pkgs "${UNNODE_PACKAGES}"; then
+        npm uninstall --no-audit --no-fund -- "${PKGS[@]}"
+    else
+        echo "ERROR: Remove NodeJS Packages berisi karakter/opsi tidak valid, dilewati."
+    fi
 fi
 
 printf '\n\033[32m===================================================\033[0m\n  \033[33mCari panel hosting murah berkualitas di bimxyz.id\033[0m  \n\033[32m===================================================\033[0m\n\n'

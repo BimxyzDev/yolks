@@ -23,6 +23,8 @@ RUN apt-get update \
  && useradd -m -d /home/container -s /bin/bash container \
  && rm -rf /var/lib/apt/lists/*
 
+RUN node -e 'const m={22:"22.23.4",24:"24.22.1",26:"26.12.1"};const v=process.versions.node.split(".").map(Number);const t=m[v[0]];if(!t){console.error("Node "+process.version+" EOL, tidak ada patch");process.exit(1)}const r=t.split(".").map(Number);if(v[1]<r[1]||(v[1]===r[1]&&v[2]<r[2])){console.error("Node "+process.version+" belum ter-patch (CVE-2026-111497)");process.exit(1)}'
+
 USER container
 ENV USER=container \
     HOME=/home/container \
