@@ -109,6 +109,10 @@ fi
 printf '\n\033[32m===================================================\033[0m\n  \033[33mCari panel hosting murah berkualitas di bimxyz.id\033[0m  \n\033[32m===================================================\033[0m\n\n'
 
 # ---------------------------------------------------------------- app
+# server lama: CMD_RUN belum ada tapi PY_FILE masih ter-set
+if [ -z "${CMD_RUN+x}" ] && [ -n "${PY_FILE}" ]; then
+    CMD_RUN="python ${PY_FILE}"
+fi
 if [ -n "${CMD_RUN}" ]; then
     eval "${CMD_RUN}"
 fi
